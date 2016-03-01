@@ -1,9 +1,50 @@
 var driver = require('./driver');
-var SearchPage = require('./google-page');
+var GooglePage = require('./google-page');
 
-driver.findById('search.spec:searchBox');
-driver.findById('search.spec:searchXXX');
+describe('google search page tests', function() {
 
-var page = new SearchPage(driver);
-page.searchText('colorful pants');
-//searchPage.searchText('colorful pants');
+    this.timeout(99999999);
+    var client = {};
+    var searchPage;
+
+    before(function(done){
+        client = driver.init().then(function(){
+            searchPage = new GooglePage(client);
+            done();
+        });
+
+    });
+
+    after(function(done) {
+        client.end().then(function(){
+            done();
+        })
+
+    });
+
+    it('should find stuff', function(done){
+        searchPage.open()
+            .then(function(){
+                return searchPage.searchText('witty doodle');
+            })
+            .then(function(){
+                return searchPage.search();
+            })
+            .then(function(){
+                return driver.pause(1000);
+            }).then(function(){
+                done();
+            });
+    });
+
+    it('should be nice promise', function(done){
+        var enterText   = searchPage.searchText.bind(null, 'witty doodle');
+        var clickSearch = searchPage.search.bind(null);
+        var waitASecond = driver.pause.bind(driver, 1000);
+
+
+        searchPage.open().then(enterText).then(clickSearch).then(waitASecond).then(done);
+    });
+
+
+});

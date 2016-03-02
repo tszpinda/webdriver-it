@@ -1,7 +1,7 @@
 var driver = require('./driver');
 var GooglePage = require('./google-page');
 
-describe('google search page tests', function() {
+describe('google search page', function() {
 
     this.timeout(99999999);
     var client = {};
@@ -46,5 +46,11 @@ describe('google search page tests', function() {
         searchPage.open().then(enterText).then(clickSearch).then(waitASecond).then(done);
     });
 
+    it('should work with yield', function* (){
+        yield searchPage.open();
+        yield searchPage.searchText('witty doodle');
+        yield searchPage.search();
+        yield driver.pause(1000);
+    });
 
 });
